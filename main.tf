@@ -3,16 +3,6 @@ provider "aws" {
   secret_key = var.secret_key
   region     = var.region
 }
-resource "aws_instance" "weblinux" {
-  ami           = var.ami
-  instance_type = var.instance_type
-
-}
-
-resource "aws_ebs_volume" "example" {
-  availability_zone = "us-west-2a"
-  size              = 1
-}
 resource "aws_security_group" "demo-sg" {
   name = "sec-grp"
   description = "Allow HTTP and SSH traffic via Terraform"
@@ -37,4 +27,15 @@ resource "aws_security_group" "demo-sg" {
     protocol    = "-1"
     cidr_blocks = ["0.0.0.0/0"]
   }
+}
+resource "aws_instance" "weblinux" {
+  ami           = var.ami
+  instance_type = var.instance_type
+  vpc_security_group_ids = [aws_security_group.demo-sg.id]
+
+}
+
+resource "aws_ebs_volume" "example" {
+  availability_zone = "us-west-2a"
+  size              = 1
 }
